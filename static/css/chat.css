@@ -1,0 +1,81 @@
+.messenger {
+    width:100%;
+    height:520px;
+    display:flex;
+    flex-direction: column;
+    gap:12px;
+}
+
+span.special {
+    font-style:italic;
+    color:#2b2b2b;
+}
+
+.message-box {
+    display:flex;
+    flex-direction: column;
+    gap:15px;
+    height:100%;
+    padding:10px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    overflow-y:auto;
+}
+
+.message {
+    max-width:55%;
+    min-width:200px;
+    align-self:flex-start;
+    flex-shrink: 0;
+    overflow:hidden;
+    background:#d6d6d6;
+}
+
+.message .content {
+    margin-top:10px;
+}
+
+.message .sender {
+    color:black;
+    text-decoration: none;
+}
+
+.message .head {
+    display:flex;
+    gap:15px;
+}
+
+.message.mine {
+    align-self:flex-end;
+    background-color:#ffffff;
+}
+
+.system-message {
+    width:100%;
+    text-align:center;
+    margin-top:5px;
+    margin-bottom:5px;
+}
+
+
+.input-panel {
+    display:flex;
+    align-items: center;
+    gap:5px;
+    padding:10px;
+}
+
+.msg-input {
+    width:100%;
+    height:18px;
+}
+
+.input-panel .send-button {
+    width:35px;
+    background-image:url('../img/send.png');
+    background-position: center;
+    background-size:25px 25px;
+    background-repeat: no-repeat;
+    cursor:pointer;
+    background-color:transparent;
+}

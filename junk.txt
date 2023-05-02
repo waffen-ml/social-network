@@ -1,0 +1,32 @@
+        <div class="post block">
+            <a class="profile heavy-link" href="#">
+                <img src="https://img.poki.com/cdn-cgi/image/quality=78,width=600,height=600,fit=cover,f=auto/a775e44c-dcf3-47e1-80f3-c55c8b236f70.png" class="profile-icon">
+                <span class="profile-name">PROFILE_NAME</span>
+            </a>
+            <div class="content">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet doloribus est aut recusandae? Explicabo, perspiciatis!
+                <!--<img class="semi-visual" src="/get_content/image/234.jpg">-->
+                <video class="semi-visual" controls>
+                    <source src="/get_content/video/a.mp4">
+                </video>
+                <div class="audio-block">
+                    <audio controls>
+                        <source src="/get_content/audio/m.mp3" type="audio/mp3">
+                    </audio>
+                    <audio controls>
+                        <source src="/get_content/audio/m.mp3" type="audio/mp3">
+                    </audio>
+                    <audio controls>
+                        <source src="/get_content/audio/m.mp3" type="audio/mp3">
+                    </audio>
+                </div>
+            </div>
+            <div class="bottom">
+                <div class="actions">
+                    <input type="button" value="👍" class="button">
+                    <input type="button" value="👎" class="button">
+                    <input type="button" value="💬" class="button">
+                </div>
+                <span class="date">Tuesday, Feb 23th</span>
+            </div>
+        </div>

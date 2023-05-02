@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body>
+        <input type="file" multiple id="fileInput">
+        <input type="button" value="Send" onclick="sendFiles()">
+    </body>
+    <script>
+        function sendFiles()
+        {
+            let xmlHttp = new XMLHttpRequest();
+            let input = document.querySelector('#fileInput');
+
+            xmlHttp.onreadystatechange = function() { 
+                if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                    alert(xmlHttp.responseText);
+            }
+            
+            xmlHttp.open("POST", 'http://127.0.0.1:5000/upload_files', true);
+
+            let formData = new FormData();
+            for(let i = 0; i < input.files.length; i += 1) {
+                formData.append('files', input.files[i], 'file' + i);
+            }
+
+            xmlHttp.send(formData);
+        }
+    </script>
+</html>

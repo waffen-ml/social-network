@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1 class="page-header">Создание поста</h1>
+
+<form action="/create_post" method="post" enctype="multipart/form-data">
+    <div class="form-unit">
+        <span class="unit-header">Текст поста</span>
+        <textarea class="inputfield multiline" id="text" name="text"></textarea>
+    </div>
+    <div class="form-unit">
+        <span class="unit-header">Загрузить файлы</span>
+        <input type="file" id="addit" name="addit" multiple>
+    </div>
+    <input type="submit" class="submit button" value="Готово">
+</form>
+
+{% endblock %}
+    

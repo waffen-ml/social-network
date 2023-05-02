@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        {% for css_unit in css %}
+        <link href="{{url_for('static', filename='css/' + css_unit)}}" rel="stylesheet" type="text/css">
+        {% endfor %}
+    </head>
+    <body class="styled-scroll">
+        <div class="main-grid">
+            <div class="side-block">
+                <a class="logo link" href="/">LOGO</a>
+                <div class="nav">
+                    {% for text, href in nav %}
+                    <a href="http://127.0.0.1:5000/{{href}}" class="heavy-link">{{text}}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="main-block">
+                {% block content %}
+                {% endblock %}
+            </div>
+            <div class="footer-block">
+                <span>Костин Илья & Тельпов Сергей & Корнелюк Рома.</span>
+            </div>
+        </div>
+
+        <div class="popup-wrapper">
+            <div class="popup">
+            </div>
+        </div>
+
+        <script>
+            const displayChangeTime = 400;
+            const popupWrapper = document.querySelector('.popup-wrapper');
+            const popup = document.querySelector('.popup');
+            let popupShowed = false;
+            
+            popupWrapper.addEventListener('click', event => {
+                if (event.target.className != 'popup-wrapper') return;
+                togglePopup();
+            });
+
+            function wrapperAnim(state) {
+                let prefix = state? '' : 'dis';
+                return `${prefix}appear ${displayChangeTime}ms ease-in-out forwards`;
+            }
+
+            function popupWindowAnim(state) {
+                let anim = state? 'move-forward' : 'move-backward';
+                return `${anim} ${displayChangeTime}ms ease-in-out forwards`;
+            }
+
+            function togglePopup() {
+                if (popupShowed) {
+                    popupWrapper.style.pointerEvents = 'none';
+                    popupWrapper.style.animation = wrapperAnim(false);
+                    popup.style.animation = popupWindowAnim(false);
+                    setTimeout(() => {
+                        popupWrapper.display = 'none';
+                        resetPopup();
+                    }, displayChangeTime)
+                    popupShowed = false;
+                    return;
+                }
+                popupWrapper.style.display = 'flex';
+                popupWrapper.style.animation = wrapperAnim(true);
+                popup.style.animation = popupWindowAnim(true);
+                setTimeout(() => {
+                    popupWrapper.style.pointerEvents = 'all';
+                    popupShowed = true;
+                }, displayChangeTime);
+            }
+
+            function resetPopup() {
+                preparePopup('');
+                popup.removeAttribute("class");
+                popup.className = 'popup';
+            }
+
+            function preparePopup(html, otherClass) {
+                popup.innerHTML = html;
+                if (otherClass) popup.classList.add(otherClass);
+            }
+
+            function loadContent(link) {
+                let html = '';
+                let contentLink = `/get_content/${link}`;
+                if (link.startsWith('video')) {
+                    html = '<video class="visual-content" controls>' + 
+                        `<source src="${contentLink}"></video>`;
+                } else {
+                    html = `<img class="visual-content" src="${contentLink}">`;
+                }
+                preparePopup(html);
+            }
+
+            function showContent(link) {
+                if (popupShowed) return;
+                loadContent(link);
+                togglePopup();
+            }
+
+        </script>
+    </body>
+</html>

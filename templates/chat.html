@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<h1 class="page-header">Чат</h1>
+
+<div class="messenger">
+    <div class="block message-box styled-scroll">
+        {{ chat_html | safe }}
+    </div>
+    <div class="block input-panel">
+        <input type="button" class="button" onclick="attachContent()" value="Файлы...">
+        <input type="text" class="inputfield msg-input" placeholder="Введите сообщение">
+        <input type="button" class="send-button" onclick="sendMessage()">
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
+integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA=="
+crossorigin="anonymous"></script>
+
+<script>
+    const msgBox = document.querySelector('.message-box');
+    const msgInput = document.querySelector('.msg-input');
+    const socket = io();
+    const myIdx = '{{ my_idx }}';
+    let attachedFiles = null;
+    let sending = false;
+
+    function strWeight(s) {
+        for (let i = 0; i < s.length; i += 1)
+            if (s[i] != ' ' && s[i] != '\n') return true;
+        return false;
+    }
+
+    function sendMessage() {
+        let text = msgInput.value;
+        if (sending || !strWeight(text) && !attachedFiles)
+            return;
+        sending = true;
+        let head = function(t) {
+            let attached = JSON.parse(t);
+            socket.emit('message', {
+                'text': text,
+                'attached_files': attached
+            });
+            msgInput.value = '';
+            clearAttachedFiles();
+            sending = false;
+        }
+        if (attachedFiles) sendAttached(head);
+        else head('[]');
+    }
+
+    function createFileContainer(name, files) {
+        let formData = new FormData();
+        for (let i = 0; i < files.length; i += 1)
+            formData.append(name, files[i], 'file' + i);
+        return formData;
+    }
+
+    function sendAttached(callback) {
+        let xmlHttp = new XMLHttpRequest();
+        xmlHttp.open("POST", 'http://127.0.0.1:5000/upload_files', true);
+        xmlHttp.onreadystatechange = function() { 
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                callback(xmlHttp.responseText);
+        }
+        xmlHttp.send(createFileContainer('files', attachedFiles));
+    }
+
+    function updateMyMessages() {
+        let units = document.querySelectorAll(`.message[from="${myIdx}"]:not(.mine)`);
+        for (let i = 0; i < units.length; i += 1)
+            units[i].classList.add('mine');
+    }
+
+    function addMessage(html) {
+        msgBox.innerHTML += html;
+        msgBox.scrollTo({ top: msgBox.scrollHeight,
+            behavior: 'smooth' });
+        updateMyMessages();
+    }
+
+    function attachContent() {
+        if (sending) return;
+        let html = '<h1 class="popup-header">Прикрепить файлы</h1>' +
+            '<input type="file" multiple id="fileInput">' + 
+            '<div class="popup-buttons">' +
+            '<input type="button" class="button" value="Отмена" onclick="cancelAttachment()">' + 
+            '<input type="button" class="button" value="Ок" onclick="confirmAttachment()"></div>'
+        preparePopup(html, 'attach-popup');
+
+        if (attachedFiles) {
+            let fInput = getFileInput();
+            fInput.files = attachedFiles;
+        }
+        
+        togglePopup();
+    }
+
+    function getFileInput() {
+        return document.querySelector('#fileInput');
+    }
+
+    function clearAttachedFiles() {
+        attachedFiles = null;
+    }
+
+    function cancelAttachment() {
+        clearAttachedFiles();
+        togglePopup();
+    }
+
+    function confirmAttachment() {
+        attachedFiles = getFileInput().files;
+        togglePopup();
+    }
+    
+    socket.on('message', html => {
+        addMessage(html);
+    });
+
+    updateMyMessages();
+
+</script>
+
+{% endblock %}
+    

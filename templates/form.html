@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1 class="page-header">{{ form.name }}</h1>
+
+<form action="/form/{{ idx }}" method="post">
+    {{ form.html() | safe }}
+    
+    {% for msg in get_flashed_messages() %}
+    <span class="flash">{{msg}}</span>
+    {% endfor %}
+    <input type="submit" class="submit button" value="Отправить">
+</form>
+  
+
+{% endblock %}
